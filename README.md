@@ -31,5 +31,5 @@ Used for updating and configuring all Studica electronics.
 Starting this year (**2025**), it should be accessible via VSCode. Until then, the link is here:
 
 ```
-https://dev.studica.com/releases/2025/NavX.json
+https://dev.studica.com/releases/2025/NavX-2025.1.1-beta-1.json
 ```
