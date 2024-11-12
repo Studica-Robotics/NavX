@@ -63,6 +63,10 @@ Used for updating and configuring all Studica electronics.
 - Updated some print statements
 - Applied patches introduced by robotpy [1](https://github.com/robotpy/robotpy-navx/blob/main/navx/src/ahrs.h.patch), [2](https://github.com/robotpy/robotpy-navx/blob/main/navx/src/sources.patch)
 
+**v2025.1.1-beta-3**
+- Added Serial and I2C support.
+- Fixed Simulation not exiting on Linux machines [#1](https://github.com/Studica-Robotics/NavX/issues/1). 
+
 ### VSCode Install
 Starting this year (**2025**), Vendordeps can be installed directly from the WPILib VSCode.
 
@@ -89,5 +93,5 @@ To update the vendordep, open the **WPILib Vendor Dependencies** find the navx_f
 For those that wish to use the old method of importing vendordeps, the JSON is here:
 
 ```
-https://dev.studica.com/releases/2025/Studica-2025.1.1-beta-2.json
+https://dev.studica.com/releases/2025/Studica-2025.1.1-beta-3.json
 ```
