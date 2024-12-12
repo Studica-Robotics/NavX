@@ -65,7 +65,33 @@ Used for updating and configuring all Studica electronics.
 
 **v2025.1.1-beta-3**
 - Added Serial and I2C support.
-- Fixed Simulation not exiting on Linux machines [#1](https://github.com/Studica-Robotics/NavX/issues/1). 
+- Fixed Simulation not exiting on Linux machines [#1](https://github.com/Studica-Robotics/NavX/issues/1).
+
+**v2025.1.1-beta-4**
+- Enhanced simulation in the background. This enables new ways of doing simulation:
+
+    ```java
+    import edu.wpi.first.hal.SimDouble;
+    import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
+
+    private SimDeviceSim device;
+    private SimDouble angle;
+
+    device = new SimDeviceSim("navX-Sensor", navx.getPort());
+    angle = device.getDouble("Yaw");
+    ```
+    getPort() allows the user to not know the exact port #.
+
+- New constructor for using a custom refresh rate outside of the stable enums. [#2](https://github.com/Studica-Robotics/NavX/issues/2). 
+    ```java
+    navx = new AHRS(AHRS.NavXComType.kMXP_SPI, 100);
+    ```
+    ```c++
+    studica::AHRS navx{studica::AHRS::NavXComType::kMXP_SPI, 100};
+    ```
+
+- Fixed fault with GetBoardYawAxis() [#4](https://github.com/Studica-Robotics/NavX/issues/4).
+
 
 ### VSCode Install
 Starting this year (**2025**), Vendordeps can be installed directly from the WPILib VSCode.
@@ -93,5 +119,5 @@ To update the vendordep, open the **WPILib Vendor Dependencies** find the navx_f
 For those that wish to use the old method of importing vendordeps, the JSON is here:
 
 ```
-https://dev.studica.com/releases/2025/Studica-2025.1.1-beta-3.json
+https://dev.studica.com/releases/2025/Studica-2025.1.1-beta-4.json
 ```
