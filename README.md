@@ -30,12 +30,8 @@ Used for updating and configuring all Studica electronics.
 
 ### Changelog
 
-**v2025.1.1-beta-1**
-- Same as 2024 rebuilt for 2025 to get teams going.
-
-**v2025.1.1.beta-2**
+**v2025.0.0**
 - Switched to a Driver / JNI setup. This should increase performance for Java teams. 
-- Currently, only SPI is enabled.
 - Renamed vendordep to Studica.
     Results in new imports:
     ```Java
@@ -62,12 +58,7 @@ Used for updating and configuring all Studica electronics.
 - Fixed Setting update rate in Java 
 - Updated some print statements
 - Applied patches introduced by robotpy [1](https://github.com/robotpy/robotpy-navx/blob/main/navx/src/ahrs.h.patch), [2](https://github.com/robotpy/robotpy-navx/blob/main/navx/src/sources.patch)
-
-**v2025.1.1-beta-3**
-- Added Serial and I2C support.
 - Fixed Simulation not exiting on Linux machines [#1](https://github.com/Studica-Robotics/NavX/issues/1).
-
-**v2025.1.1-beta-4**
 - Enhanced simulation in the background. This enables new ways of doing simulation:
 
     ```java
@@ -89,8 +80,31 @@ Used for updating and configuring all Studica electronics.
     ```c++
     studica::AHRS navx{studica::AHRS::NavXComType::kMXP_SPI, 100};
     ```
-
 - Fixed fault with GetBoardYawAxis() [#4](https://github.com/Studica-Robotics/NavX/issues/4).
+- Added Robot Centric Velocities
+    ```java
+    navx.getRobotCentricVelocityX();
+    navx.getRobotCentricVelocityY();
+    navx.getRobotCentricVelocityZ();
+    ```
+    ```c++
+    navx.GetRobotCentricVelocityX();
+    navx.GetRobotCentricVelocityY();
+    navx.GetRobotCentricVelocityZ();
+    ```
+    These velocities use the quaternion as a header and should be safe from gimbal lock.
+- Added flags for swaping velocity axes.
+    ```java
+    navx.configureVelocity(boolean swapAxes, boolean invertX, boolean invertY, boolean invertZ);
+    ```
+    ```c++
+    navx.ConfigureVelocity(bool swapAxes, bool invertX, bool invertY, bool invertZ);
+    ```
+
+    **swapAxes**, will swap X and Y axes.  
+    **invertX**, will invert the X axis.  
+    **invertY**, will invert the Y axis.  
+    **invertZ**, will invert the Z axis.
 
 
 ### VSCode Install
@@ -110,7 +124,7 @@ Starting this year (**2025**), Vendordeps can be installed directly from the WPI
 
 ### VSCode Update
 
-To update the vendordep, open the **WPILib Vendor Dependencies** find the navx_frc or Studica vendordep select the dropdown and the latest version. Hit the update button to install the update. 
+To update the vendordep, open the **WPILib Vendor Dependencies** find the Studica vendordep select the dropdown and the latest version. Hit the update button to install the update. 
 
     <img src='assets/vscodeVendorDep-4.png' width='50%'><br/>
 
@@ -119,5 +133,5 @@ To update the vendordep, open the **WPILib Vendor Dependencies** find the navx_f
 For those that wish to use the old method of importing vendordeps, the JSON is here:
 
 ```
-https://dev.studica.com/releases/2025/Studica-2025.1.1-beta-4.json
+https://dev.studica.com/releases/2025/Studica-2025.0.0.json
 ```
