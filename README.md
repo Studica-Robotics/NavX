@@ -29,6 +29,9 @@ Used for updating and configuring all Studica electronics.
 > [!NOTE]
 > The Vendordeps StudicaLib and Studica cannot be used at the same time!
 
+> [!IMPORTANT]
+> Please update your navX3-CAN to a min version of 5.0.4!
+
 ### Changelog
 
 **v2026.0.0**
