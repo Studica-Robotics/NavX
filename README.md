@@ -9,26 +9,42 @@ Used for updating and configuring all Studica electronics.
 > [!NOTE]
 > The downloads are ~220 MB to ~550 MB
 
-> [!CAUTION]
-> This app downloads new DFU drivers that may conflict with other vendor's software and devices!
+**Windows 64-bit**: [Download](https://dev.studica.com/maven/release/firmware/app/win32/Studica_Hardware_Manager-Setup_1.1.0.exe)
 
-**Windows 64-bit**: [Download](https://dev.studica.com/maven/release/firmware/app/win32/Studica_Hardware_Manager-Setup_1.0.0.exe)
-
-**macOS**: [Download](https://dev.studica.com/maven/release/firmware/app/macOS/Studica_Hardware_Manager-Setup_1.0.0.pkg) 
+**macOS**: [Download](https://dev.studica.com/maven/release/firmware/app/macOS/Studica_Hardware_Manager-Setup_1.1.0.pkg) 
 
 ### Supported Devices
 * navX-micro
 * navX-mxp
 * navX2-micro
 * navX2-mxp
+* navX3-CAN
 * vmx
 * vmx2
 * Titan
 * Servo Manager
 
-## WPILib Vendordep
+## WPILib StudicaLib Vendordep
+
+> [!NOTE]
+> The Vendordeps StudicaLib and Studica cannot be used at the same time!
 
 ### Changelog
+
+**v2026.0.0**
+- Added support for NavX3-CAN
+- Uses WPILib Units
+- Javadoc added for robotpy
+
+## WPILib Studica Vendordep (deprecated for 2027)
+
+> [!NOTE]
+> The Vendordeps StudicaLib and Studica cannot be used at the same time!
+
+### Changelog
+
+**v2026.0.0**
+- Compiled for 2026
 
 **v2025.0.0**
 - Switched to a Driver / JNI setup. This should increase performance for Java teams. 
@@ -108,13 +124,13 @@ Used for updating and configuring all Studica electronics.
 
 
 ### VSCode Install
-Starting this year (**2025**), Vendordeps can be installed directly from the WPILib VSCode.
+Starting in (**2025**), Vendordeps can be installed directly from the WPILib VSCode.
 
 1. From VSCode select the **WPILib Vendor Dependencies** extension. 
 
     <img src='assets/vscodeVendorDep-1.png' width='50%'><br/>
 
-2. Find the NavX Listing and hit Install.
+2. Find the Studica Listing and hit Install.
 
     <img src='assets/vscodeVendorDep-2.png' width='50%'><br/>
 
@@ -133,5 +149,5 @@ To update the vendordep, open the **WPILib Vendor Dependencies** find the Studic
 For those that wish to use the old method of importing vendordeps, the JSON is here:
 
 ```
-https://dev.studica.com/releases/2025/Studica-2025.0.0.json
+https://dev.studica.com/maven/release/2026/json/Studica-2026.0.0.json
 ```
