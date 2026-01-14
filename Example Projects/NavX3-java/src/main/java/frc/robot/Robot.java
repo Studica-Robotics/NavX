@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.geometry.Quaternion;
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   private Navx navx;
+  private SimDeviceSim device;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -42,6 +44,9 @@ public class Robot extends TimedRobot {
 
     // Create NavX Object
     navx = new Navx(0, 100);
+
+    // Create Sim Object
+    device = new SimDeviceSim("NavX3", 0);
     
     // You can enable which messages the navx sends to prevent bus saturation 
     navx.enableOptionalMessages(true,

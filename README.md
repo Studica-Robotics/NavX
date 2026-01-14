@@ -34,6 +34,11 @@ Used for updating and configuring all Studica electronics.
 
 ### Changelog
 
+**v2026.0.1**
+- Added support for simulation with NavX3
+- Background CAN gets no longer cause crashes with incorrect board firmwares
+- Added json conflict check to ensure lib is not used at same time as the other lib
+
 **v2026.0.0**
 - Added support for NavX3-CAN
 - Uses WPILib Units

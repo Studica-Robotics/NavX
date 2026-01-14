@@ -10,6 +10,7 @@
 #include <frc/smartdashboard/SendableChooser.h>
 
 #include "studica/Navx.h"
+#include "frc/simulation/SimDeviceSim.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -32,4 +33,5 @@ class Robot : public frc::TimedRobot {
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
   studica::Navx navx{0, 100};
+  frc::sim::SimDeviceSim device{"NavX3", 0};
 };
