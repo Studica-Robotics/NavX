@@ -37,10 +37,11 @@ Robot::Robot() {
 void Robot::RobotPeriodic()
 {
   int error;
-  // Yaw, Pitch, Roll
+  // Yaw, Pitch, Roll, Angle
   frc::SmartDashboard::PutNumber("Yaw:",   navx.GetYaw().value());
   frc::SmartDashboard::PutNumber("Pitch:", navx.GetPitch().value());
   frc::SmartDashboard::PutNumber("Roll:",  navx.GetRoll().value());
+  frc::SmartDashboard::PutNumber("Angle:", navx.GetAngle().value());
 
   // 6-axis quaternion
   frc::Quaternion quat6{};
@@ -72,13 +73,13 @@ void Robot::RobotPeriodic()
   frc::SmartDashboard::PutNumber("a_y:", ay.value());
   frc::SmartDashboard::PutNumber("a_z:", az.value());
 
-  // Get Compass reading from Mag (Compass sending over CAN is currently disabled due to bug :( )
-  // units::tesla_t mx{0}, my{0}, mz{0}, mnorm{0};
-  // error = navx.GetCompass(mx, my, mz, mnorm);
-  // frc::SmartDashboard::PutNumber("mag_x_ut:", mx.value() * 1e-6);
-  // frc::SmartDashboard::PutNumber("mag_y_ut:", my.value() * 1e-6);
-  // frc::SmartDashboard::PutNumber("mag_z_ut:", mz.value() * 1e-6);
-  // frc::SmartDashboard::PutNumber("mag_norm_ut:", mnorm.value() * 1e-6);
+  // Get Compass reading from Mag
+  units::tesla_t mx{0}, my{0}, mz{0}, mnorm{0};
+  error = navx.GetCompass(mx, my, mz, mnorm);
+  frc::SmartDashboard::PutNumber("mag_x_ut:", mx.value() * 1e-6);
+  frc::SmartDashboard::PutNumber("mag_y_ut:", my.value() * 1e-6);
+  frc::SmartDashboard::PutNumber("mag_z_ut:", mz.value() * 1e-6);
+  frc::SmartDashboard::PutNumber("mag_norm_ut:", mnorm.value() * 1e-6);
 
   // Temperature reported by IMU
   frc::SmartDashboard::PutNumber("temp:", navx.GetTemperature().value());

@@ -7,11 +7,14 @@ Used for updating and configuring all Studica electronics.
 ### Downloads
 
 > [!NOTE]
-> The downloads are ~220 MB to ~550 MB
+> The downloads are ~120 MB to ~550 MB
 
-**Windows 64-bit**: [Download](https://dev.studica.com/maven/release/firmware/app/win32/Studica_Hardware_Manager-Setup_1.1.0.exe)
+> [!IMPORTANT]
+> There is a bug in the 1.1.0 version of the software that may cause issues updated for some people. A manual installation is required of the latest below!
 
-**macOS**: [Download](https://dev.studica.com/maven/release/firmware/app/macOS/Studica_Hardware_Manager-Setup_1.1.0.pkg) 
+**Windows 64-bit**: [Download](https://dev.studica.com/maven/release/firmware/app/win32/Studica_Hardware_Manager-Setup_1.1.1.exe)
+
+**macOS**: [Download](https://dev.studica.com/maven/release/firmware/app/macOS/Studica_Hardware_Manager-Setup_1.1.1.pkg) 
 
 ### Supported Devices
 * navX-micro
@@ -30,13 +33,22 @@ Used for updating and configuring all Studica electronics.
 > The Vendordeps StudicaLib and Studica cannot be used at the same time!
 
 > [!IMPORTANT]
-> Please update your navX3-CAN to a min version of 5.0.4!
+> Please update your navX3-CAN to a min version of 5.0.5!
+
+### API Links
+
+**Java**: [API](https://dev.studica.com/maven/release/APIDocs/Java/)
+
+**C++**: [API](https://dev.studica.com/maven/release/APIDocs/CPP/)
 
 ### Changelog
 
+**v2026.0.2**
+- Added support for USB comms with NavX3
+
 **v2026.0.1**
 - Added support for simulation with NavX3
-- Background CAN gets no longer cause crashes with incorrect board firmwares
+- Background CAN gets no longer cause crashes with incorrect board firmware's
 - Added json conflict check to ensure lib is not used at same time as the other lib
 
 **v2026.0.0**

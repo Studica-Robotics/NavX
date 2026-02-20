@@ -32,6 +32,7 @@ class Robot : public frc::TimedRobot {
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
-  studica::Navx navx{0, 100};
+  studica::Navx navx{0, 100}; // CAN bus
+  // studica::Navx navx{studica::Navx::Port::kUSB1, 100}; // USB
   frc::sim::SimDeviceSim device{"NavX3", 0};
 };
