@@ -2,93 +2,119 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "Robot.h"
+#include "Robot.hpp"
 
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <wpi/print.h>
+#include <format>
+
+#include "studica/CanBus.hpp"
+#include "wpi/telemetry/Telemetry.hpp"
+#include "wpi/tunables/Tunables.hpp"
+#include "wpi/util/print.hpp"
 
 Robot::Robot() {
-  m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
-  m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+  chooser.AddDefault(AUTO_NAME_DEFAULT, AUTO_NAME_DEFAULT);
+  chooser.Add(AUTO_NAME_CUSTOM, AUTO_NAME_CUSTOM);
+  wpi::tunables::Publish("Auto Modes", chooser);
 
-  // You can enable which messages the navx sends to prevent bus saturation 
-  navx.EnableOptionalMessages(true, true, true, true, true, true, true, true, true);
+  // Optional: switch bus S0 to CAN FD (every device on the bus must support CAN
+  // FD)
+  // studica::CanBus::RequestMode(wpi::CANPort::CAN_S0,
+  //                              studica::CanBusMode::FD_5MBPS);
 
-  // UUID of the navx if thats something you want
-  int uuids[3] = {0};
-  navx.GetSensorUUID(uuids);
-  frc::SmartDashboard::PutNumber("uuid0", uuids[0]);
-  frc::SmartDashboard::PutNumber("uuid1", uuids[1]);
-  frc::SmartDashboard::PutNumber("uuid2", uuids[2]);
+  // Show the reset yaw button on the dashboard
+  wpi::tunables::Publish("NavX3/Reset Yaw", resetYaw);
 
-  // Zero Yaw Btn
-  frc::SmartDashboard::PutBoolean("Reset Yaw", false);
+  // Optional: choose which data the NavX3 sends to reduce CAN traffic
+  // navx.EnableMessages(studica::NavxMessage::YAW |
+  //                     studica::NavxMessage::ANGULAR_VELOCITY);
+
+  // Firmware version and unique ID of the NavX3
+  if (auto version = navx.GetFirmwareVersion()) {
+    wpi::util::print("NavX3 firmware: {}.{}.{}\n", version->major,
+                     version->minor, version->patch);
+  }
+  if (auto uuid = navx.GetSensorUuid()) {
+    wpi::telemetry::Log("NavX3/UUID",
+                        std::format("{:08X}-{:08X}-{:08X}", (*uuid)[0],
+                                    (*uuid)[1], (*uuid)[2]));
+  }
 }
 
 /**
  * This function is called every 20 ms, no matter the mode. Use
  * this for items like diagnostics that you want ran during disabled,
- * autonomous, teleoperated and test.
+ * autonomous, teleoperated and utility.
  *
  * <p> This runs after the mode specific periodic functions, but before
  * LiveWindow and SmartDashboard integrated updating.
  */
-void Robot::RobotPeriodic()
-{
-  int error;
+void Robot::RobotPeriodic() {
+  // Each getter returns a std::optional, which is empty until the NavX3 sends
+  // data
+  wpi::telemetry::Log("NavX3/Connected", navx.IsConnected());
+
   // Yaw, Pitch, Roll, Angle
-  frc::SmartDashboard::PutNumber("Yaw:",   navx.GetYaw().value());
-  frc::SmartDashboard::PutNumber("Pitch:", navx.GetPitch().value());
-  frc::SmartDashboard::PutNumber("Roll:",  navx.GetRoll().value());
-  frc::SmartDashboard::PutNumber("Angle:", navx.GetAngle().value());
+  if (auto yaw = navx.GetYaw()) {
+    wpi::telemetry::Log("NavX3/Yaw (deg)", yaw->value());
+  }
+  if (auto pitch = navx.GetPitch()) {
+    wpi::telemetry::Log("NavX3/Pitch (deg)", pitch->value());
+  }
+  if (auto roll = navx.GetRoll()) {
+    wpi::telemetry::Log("NavX3/Roll (deg)", roll->value());
+  }
+  if (auto angle = navx.GetAngle()) {
+    wpi::telemetry::Log("NavX3/Angle (deg)", angle->value());
+  }
+  // For drivetrain code, GetRotation2d() gives the heading as a Rotation2d
 
   // 6-axis quaternion
-  frc::Quaternion quat6{};
-  error = navx.GetQuat6D(quat6);
-  frc::SmartDashboard::PutNumber("q6_w:", quat6.W());
-  frc::SmartDashboard::PutNumber("q6_x:", quat6.X());
-  frc::SmartDashboard::PutNumber("q6_y:", quat6.Y());
-  frc::SmartDashboard::PutNumber("q6_z:", quat6.Z());
+  if (auto q = navx.GetQuaternion6d()) {
+    wpi::telemetry::Log("NavX3/Quat6D W", q->W());
+    wpi::telemetry::Log("NavX3/Quat6D X", q->X());
+    wpi::telemetry::Log("NavX3/Quat6D Y", q->Y());
+    wpi::telemetry::Log("NavX3/Quat6D Z", q->Z());
+  }
 
-  // Angular Velocity
-  units::degrees_per_second_t wx{0}, wy{0}, wz{0};
-  error = navx.GetAngularVel(wx, wy, wz);
-  frc::SmartDashboard::PutNumber("w_x:", wx.value());
-  frc::SmartDashboard::PutNumber("w_y:", wy.value());
-  frc::SmartDashboard::PutNumber("w_z:", wz.value());
+  // 9-axis quaternion (uses the magnetometer)
+  if (auto q = navx.GetQuaternion9d()) {
+    wpi::telemetry::Log("NavX3/Quat9D W", q->W());
+    wpi::telemetry::Log("NavX3/Quat9D X", q->X());
+    wpi::telemetry::Log("NavX3/Quat9D Y", q->Y());
+    wpi::telemetry::Log("NavX3/Quat9D Z", q->Z());
+  }
 
-  // 9-axis quaternion 
-  frc::Quaternion quat9{};
-  error = navx.GetQuat9D(quat9);
-  frc::SmartDashboard::PutNumber("q9_w:", quat6.W());
-  frc::SmartDashboard::PutNumber("q9_x:", quat6.X());
-  frc::SmartDashboard::PutNumber("q9_y:", quat6.Y());
-  frc::SmartDashboard::PutNumber("q9_z:", quat6.Z());
+  // Angular velocity, in radians per second
+  if (auto w = navx.GetAngularVelocity()) {
+    wpi::telemetry::Log("NavX3/Gyro X (rad per s)", w->x.value());
+    wpi::telemetry::Log("NavX3/Gyro Y (rad per s)", w->y.value());
+    wpi::telemetry::Log("NavX3/Gyro Z (rad per s)", w->z.value());
+  }
 
-  // Linear Acceleration
-  units::meters_per_second_squared_t ax{0}, ay{0}, az{0};
-  error = navx.GetLinearAccel(ax, ay, az);
-  frc::SmartDashboard::PutNumber("a_x:", ax.value());
-  frc::SmartDashboard::PutNumber("a_y:", ay.value());
-  frc::SmartDashboard::PutNumber("a_z:", az.value());
+  // Linear acceleration, in metres per second squared
+  if (auto a = navx.GetLinearAcceleration()) {
+    wpi::telemetry::Log("NavX3/Accel X (m per s2)", a->x.value());
+    wpi::telemetry::Log("NavX3/Accel Y (m per s2)", a->y.value());
+    wpi::telemetry::Log("NavX3/Accel Z (m per s2)", a->z.value());
+  }
 
-  // Get Compass reading from Mag
-  units::tesla_t mx{0}, my{0}, mz{0}, mnorm{0};
-  error = navx.GetCompass(mx, my, mz, mnorm);
-  frc::SmartDashboard::PutNumber("mag_x_ut:", mx.value() * 1e-6);
-  frc::SmartDashboard::PutNumber("mag_y_ut:", my.value() * 1e-6);
-  frc::SmartDashboard::PutNumber("mag_z_ut:", mz.value() * 1e-6);
-  frc::SmartDashboard::PutNumber("mag_norm_ut:", mnorm.value() * 1e-6);
+  // Magnetometer, in microtesla
+  if (auto mag = navx.GetMagneticField()) {
+    wpi::telemetry::Log("NavX3/Mag X (uT)", mag->x.value());
+    wpi::telemetry::Log("NavX3/Mag Y (uT)", mag->y.value());
+    wpi::telemetry::Log("NavX3/Mag Z (uT)", mag->z.value());
+    wpi::telemetry::Log("NavX3/Mag Norm (uT)", mag->norm.value());
+  }
 
-  // Temperature reported by IMU
-  frc::SmartDashboard::PutNumber("temp:", navx.GetTemperature().value());
+  // Temperature reported by the IMU
+  if (auto temp = navx.GetTemperature()) {
+    wpi::telemetry::Log("NavX3/Temperature (C)", temp->value());
+  }
 
-  // Zero Yaw if btn pushed
-  if (frc::SmartDashboard::GetBoolean("Reset Yaw", false))
-  {
+  // Zero the yaw when the dashboard button is pressed
+  if (resetYaw.Get()) {
     navx.ResetYaw();
-    frc::SmartDashboard::PutBoolean("Reset Yaw", false);
+    resetYaw.Set(false);
   }
 }
 
@@ -100,16 +126,17 @@ void Robot::RobotPeriodic()
  * auto name from the text box below the Gyro.
  *
  * You can add additional auto modes by adding additional comparisons to the
- * if-else structure below with additional strings. If using the SendableChooser
- * make sure to add them to the chooser code above as well.
+ * if-else structure below with additional strings. If using
+ * wpi::tunables::Selectable make sure to add them to the chooser code above as
+ * well.
  */
 void Robot::AutonomousInit() {
-  m_autoSelected = m_chooser.GetSelected();
-  // m_autoSelected = SmartDashboard::GetString("Auto Selector",
-  //     kAutoNameDefault);
-  wpi::print("Auto selected: {}\n", m_autoSelected);
+  autoSelected = chooser.GetSelected();
+  // autoSelected = SmartDashboard::GetString("Auto Selector",
+  //     AUTO_NAME_DEFAULT);
+  wpi::util::print("Auto selected: {}\n", autoSelected);
 
-  if (m_autoSelected == kAutoNameCustom) {
+  if (autoSelected == AUTO_NAME_CUSTOM) {
     // Custom Auto goes here
   } else {
     // Default Auto goes here
@@ -117,7 +144,7 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-  if (m_autoSelected == kAutoNameCustom) {
+  if (autoSelected == AUTO_NAME_CUSTOM) {
     // Custom Auto goes here
   } else {
     // Default Auto goes here
@@ -132,16 +159,16 @@ void Robot::DisabledInit() {}
 
 void Robot::DisabledPeriodic() {}
 
-void Robot::TestInit() {}
+void Robot::UtilityInit() {}
 
-void Robot::TestPeriodic() {}
+void Robot::UtilityPeriodic() {}
 
 void Robot::SimulationInit() {}
 
 void Robot::SimulationPeriodic() {}
 
-#ifndef RUNNING_FRC_TESTS
+#ifndef RUNNING_WPILIB_TESTS
 int main() {
-  return frc::StartRobot<Robot>();
+  return wpi::StartRobot<Robot>();
 }
 #endif
